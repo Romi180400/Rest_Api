@@ -1,3 +1,7 @@
+import os
+
+import signal
+
 from flask import Flask, request
 
 from db_connector import user_connector

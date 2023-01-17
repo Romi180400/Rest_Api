@@ -1,3 +1,7 @@
+import os
+
+import signal
+
 from flask import Flask
 
 from db_connector import getUserName
