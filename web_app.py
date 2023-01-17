@@ -8,6 +8,11 @@ from db_connector import getUserName
 
 app = Flask(__name__)
 
+@app.route('/stop_server')
+def stop_server():
+    os.kill(os.getpid(), signal.CTRL_C_EVENT)
+    return 'Server stopped'
+
 @app.route('/api/users/getUser/<user_id>', methods=['GET'])
 def get_user_name(user_id): 
     user_name = getUserName(user_id)    

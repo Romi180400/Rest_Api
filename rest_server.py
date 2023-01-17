@@ -13,6 +13,10 @@ import datetime
 app = Flask(__name__)
    
 
+@app.route('/stop_server')
+def stop_server():
+    os.kill(os.getpid(), signal.CTRL_C_EVENT)
+    return 'Server stopped'
 
 @app.route('/api/users/userData/<user_id>', methods=['GET', 'POST', 'DELETE', 'PUT'])
 def user(user_id):
