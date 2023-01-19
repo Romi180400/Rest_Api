@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('run backend server') {
+            steps {
+                bat 'start /min python rest_app.py'
+                
+            }
+        }
+        
+        stage('run frontend server') {
+            steps {
+                bat 'start /min python web_app.py'
+            }
+        }
+        
+        stage('test frontend') {
+            steps {
+                bat 'start /min python frontent_testing.py'
+            }
+        
+        }
+        
+        stage('test Backend'){
+            steps {
+                bat ' start /min python Backend_testing.py'
+            }
+                
+        }    
+        
+        stage('test combined'){
+            steps{
+                bat 'start /min python combined_testing.py'
+            }
+        }
+        
+        stage('clean_environment.py'){
+            steps{
+                bat 'start /min python clean_environment.py'
+            }
+        }
+    }
+}
