@@ -1,8 +1,8 @@
 import requests
-
+import random
 import pymysql
 
-user_id = int(input("Please Enter user_id: "))
+user_id = random.randint(1,10)
 
 try:
 
