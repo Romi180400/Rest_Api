@@ -1,6 +1,6 @@
-
 version: '3'
 services:
   api:
-    image: dockerfile:${IMAGE_VERSION}
-
+    image: romio18/my-repo:tag
+    ports:
+      - "5000:5000"

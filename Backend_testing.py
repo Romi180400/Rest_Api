@@ -6,7 +6,7 @@ user_id = random.randint(1,10)
 
 try:
 
-    res = requests.post(f'http://127.0.0.1:5000//api/users/userData/{user_id}', json={"user_name": "Hadar"})
+    res = requests.post(f'http://127.0.0.1:5000/api/users/userData/{user_id}', json={"user_name": "Hadar"})
     if res.status_code==201:
         print("User is been added succesfully")
     elif res.status_code==500:
@@ -16,7 +16,7 @@ except Exception as x:
      
 try:
 
-    res = requests.get(f'http://127.0.0.1:5000//api/users/userData/{user_id}')
+    res = requests.get(f'http://127.0.0.1:5000/api/users/userData/{user_id}')
     if res.ok:
         print(res.json())
     elif res.status_code==404:
