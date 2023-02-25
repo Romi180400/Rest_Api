@@ -2,12 +2,11 @@ pipeline {
     agent any
 
      environment {
-        IMAGE_NAME = 'dockerfile:latest'
+        IMAGE_NAME = 'new-repo:latest'
         TAG = 'latest'
         DB_USER = credentials('db-user')
         DB_PASSWORD = credentials('db-password')
     }
-    
     
     options {
         timestamps()
@@ -22,6 +21,24 @@ pipeline {
         stage('Pull code from Github') {
             steps {
                 git branch: 'master', url: 'https://github.com/Romi180400/Rest_Api.git/'
+            }
+        }
+        
+        stage('Create K8S Secret') {
+            steps {
+                script {
+                    // Create K8S Secret
+                    bat 'kubectl create secret generic my-db-credentials --from-literal=username=${DB_USER} --from-literal=password=${DB_PASSWORD}'
+                }
+            }
+        }
+        
+        stage('Create K8S ConfigMap') {
+            steps {
+                script {
+                    // Create K8S ConfigMap
+                    bat 'kubectl create configmap my-db-config --from-literal=host=my-db-host'
+                }
             }
         }
         
@@ -99,37 +116,24 @@ pipeline {
             }
         }
         
-        stage('Deploy to Kubernetes cluster') {
+        stage('Create MySQL deployment') {
             steps {
                 script {
-                    // Install helm chart
-                    bat 'helm install my-chart chart/ --set image.repository=romio18/new-repo,image.tag=$TAG,replicaCount=5,service.type=LoadBalancer'
+                    // Create PersistentVolume
+                    bat 'kubectl apply -f mysql-pv.yaml'
                     
-                    // Get the k8s service URL and write it to file
-                    bat 'minikube service hello-python-service --url > k8s_url.txt'
+                    // Create PersistentVolumeClaim
+                    bat 'kubectl apply -f mysql-pvc.yaml'
+                    
+                    // Create MySQL deployment
+                    bat 'kubectl apply -f mysql-deployment.yaml'
                 }
             }
         }
         
-        stage('Test K8S deployed app') {
+        stage('Change rest_app.py to use MySQL') {
             steps {
                 script {
-                    // Read k8s service URL from file
-                    def k8s_url = readFile('k8s_url.txt').trim()
-                    
-                    // Perform test on K8S deployed app
-                    bat "start /min python K8S_backend_testing.py ${k8s_url}"
-                }
-            }
-        }
-        
-        stage('Clean up HELM environment') {
-            steps {
-                script {
-                    // Uninstall helm chart
-                    bat 'helm uninstall my-chart'
-                }
-            }
-        }
-    }
-}
+                    // Update the rest_app.py file to use MySQL
+                    bat 'sed -i "s/REMOTE_DB_HOST/mysql-service/g" rest_app.py'
+                    bat 'sed -i "s/REMOTE_DB_USER/${DB_USER}/g

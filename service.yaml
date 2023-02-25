@@ -1,0 +1,24 @@
+version: "3"
+services:
+  web:
+    build: .
+    depends_on:
+      - db
+      - redis
+  redis:
+    image: redis
+  db:
+    image: postgres
+
+### apiVersion: v1
+kind: Service
+metadata:
+  name: hello-python-service
+spec:
+  selector:
+    app: hello-python3
+  ports:
+  - protocol: "TCP"
+    port: 6000
+    targetPort: 5000
+  type: {{ .Values.service.type }}

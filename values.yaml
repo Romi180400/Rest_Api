@@ -1,0 +1,12 @@
+replicaCount: 5
+image:
+  repository: myrepo/myapp
+service:
+  type: LoadBalancer
+servicePort: 80
+containerPort: 5000
+
+
+
+
+

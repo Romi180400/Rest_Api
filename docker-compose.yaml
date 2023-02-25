@@ -1,6 +1,6 @@
 version: '3'
 services:
   api:
-    image: romio18/my-repo:tag
+    image: romio18/new-repo:1
     ports:
       - "5000:5000"
